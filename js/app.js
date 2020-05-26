@@ -13,58 +13,58 @@ let data = localStorage.getItem("TODO");
 let activeLength = document.getElementsByClassName(ACTIVE);
 let completedLength = document.getElementsByClassName(COMPLETED);
 
-if(data){
+if (data) {
     LIST = JSON.parse(data);
     id = LIST.length;
+
     loadList(LIST);
     itemsLeft(activeLength.length);
     filterShow(LIST.length);
-    btnAllDoneShow()
-    btnClearCompletedShow()
-}else{
+    btnAllDoneShow();
+    btnClearCompletedShow();
+} else {
     LIST = [];
     id = 0;
 }
 
-function loadList(array){
-  array.forEach(function(item){
-      addToDo(item.name, item.id, item.done);
-  });
+function loadList(array) {
+    array.forEach(function(item) {
+        addToDo(item.name, item.id, item.done);
+    });
 }
 
-function itemsLeft(num){
+function itemsLeft(num) {
     activeLength = document.getElementsByClassName(ACTIVE);
     document.getElementById("num").textContent = num;
 }
 
 function filterShow(itemLength) {
     if(itemLength > 0) {
-      document.querySelector(".filter").classList.remove("showFilter");
+        document.querySelector(".filter").classList.remove("showFilter");
     } else {
-      document.querySelector(".filter").classList.add("showFilter");
+        document.querySelector(".filter").classList.add("showFilter");
     }
 }
 
 function btnAllDoneShow() {
-  if(LIST.length > 0) {
-      document.querySelector(".content__allDone").classList.add("show");
-  } else {
-    document.querySelector(".content__allDone").classList.remove("show");
-  }
+    if(LIST.length > 0) {
+        document.querySelector(".content__allDone").classList.add("show");
+    } else {
+        document.querySelector(".content__allDone").classList.remove("show");
+    }
 }
 
 function btnClearCompletedShow() {
-  if(completedLength.length > 0) {
-      document.querySelector(".clearCompleted").classList.add("show");
-  } else {
-    document.querySelector(".clearCompleted").classList.remove("show");
-  }
+    if(completedLength.length > 0) {
+        document.querySelector(".clearCompleted").classList.add("show");
+    } else {
+        document.querySelector(".clearCompleted").classList.remove("show");
+    }
 }
 
 // addNewItem ===============
 // ==========================
 function addToDo(toDo, id, done) {
-
     const MADE = done ? COMPLETED : ACTIVE;
     const DONE = done ? CHECK : UNCHECK;
     const LINE = done ? LINE_THROUGH : "";
@@ -91,11 +91,14 @@ document.addEventListener("keyup", function(event) {
                 id : id,
                 done : false,
             });
-            itemsLeft(activeLength.length);
+
             id++;
+
+            itemsLeft(activeLength.length);
             filterSelection(activeFilterJob);
             filterShow(LIST.length);
-            btnAllDoneShow()
+            btnAllDoneShow();
+
             localStorage.setItem("TODO", JSON.stringify(LIST));
         }
         input.value = "";
@@ -107,63 +110,67 @@ document.addEventListener("keyup", function(event) {
 filterSelection("all")
 
 function filterSelection (name) {
-  let className = document.getElementsByClassName("filterDiv");
-  if (name == "all") name = "";
-  Object.keys(className).forEach(function(i) {
-    removeClass(className[i], "show");
-    if (className[i].className.indexOf(name) > -1) addClass(className[i], "show");
-  });
+    let className = document.getElementsByClassName("filterDiv");
+
+    if(name == "all") name = "";
+    Object.keys(className).forEach(function(i) {
+        removeClass(className[i], "show");
+        if (className[i].className.indexOf(name) > -1) addClass(className[i], "show");
+    });
 }
 
 function addClass(element, name) {
-  let  arr1, arr2;
-  arr1 = element.className.split(" ");
-  arr2 = name.split(" ");
-    Object.keys(arr2).forEach(function(i) {
-    if (arr1.indexOf(arr2[i]) == -1) {
-      element.className += " " + arr2[i];
-    }
-  });
+    let  arr1, arr2;
+
+    arr1 = element.className.split(" ");
+    arr2 = name.split(" ");
+        Object.keys(arr2).forEach(function(i) {
+        if(arr1.indexOf(arr2[i]) == -1) {
+        element.className += " " + arr2[i];
+        }
+    });
 }
 
 function removeClass(element, name) {
-  let arr1, arr2;
-  arr1 = element.className.split(" ");
-  arr2 = name.split(" ");
-  Object.keys(arr2).forEach(function(i) {
-    while (arr1.indexOf(arr2[i]) > -1) {
-      arr1.splice(arr1.indexOf(arr2[i]), 1);
-    }
-  });
-  element.className = arr1.join(" ");
+    let arr1, arr2;
+
+    arr1 = element.className.split(" ");
+    arr2 = name.split(" ");
+    Object.keys(arr2).forEach(function(i) {
+        while (arr1.indexOf(arr2[i]) > -1) {
+        arr1.splice(arr1.indexOf(arr2[i]), 1);
+        }
+    });
+    element.className = arr1.join(" ");
 }
 
 let btnContainer = document.getElementById("myBtnContainer");
 let btns = btnContainer.getElementsByClassName("btn");
+
 Object.keys(btns).forEach(function(i) {
-  btns[i].addEventListener("click", function() {
-    let current = document.getElementsByClassName("included");
-    current[0].className = current[0].className.replace(" included", "");
-    this.className += " included";
-  });
+    btns[i].addEventListener("click", function() {
+        let current = document.getElementsByClassName("included");
+        current[0].className = current[0].className.replace(" included", "");
+        this.className += " included";
+    });
 });
 
 let activeFilterJob = "all";
 
-myBtnContainer.addEventListener("click", function(event){
-  const element = event.target;
-  const filterJob = element.attributes.job.value;
- 
-  if(filterJob == "all"){
-    filterSelection("all")
-  }
-  if(filterJob == COMPLETED){
-    filterSelection(COMPLETED)
-  }
-  if(filterJob == ACTIVE){
-    filterSelection(ACTIVE)
-  }
-  activeFilterJob = filterJob;
+myBtnContainer.addEventListener("click", function(event) {
+    const element = event.target;
+    const filterJob = element.attributes.job.value;
+    
+    if(filterJob == "all") {
+        filterSelection("all");
+    }
+    if(filterJob == COMPLETED) {
+        filterSelection(COMPLETED);
+    }
+    if(filterJob == ACTIVE) {
+        filterSelection(ACTIVE);
+    }
+    activeFilterJob = filterJob;
 });
 
 // btnAllDone ==============
@@ -174,16 +181,17 @@ let checked = false;
 
 function checkedAll() {
     const btnCheck = document.querySelectorAll('button[type=button]');
+
     Object.keys(btnCheck).forEach(function(i) {
-      if(btnCheck[i].parentNode.classList.contains(ACTIVE) == checked) {
-      completeToDo(btnCheck[i]);
-      } 
-      completeToDo(btnCheck[i]);
+        if(btnCheck[i].parentNode.classList.contains(ACTIVE) == checked) {
+        completeToDo(btnCheck[i]);
+        } 
+        completeToDo(btnCheck[i]);
     });
-    
     filterSelection(activeFilterJob);
-    btnAllDoneShow()
-    btnClearCompletedShow()
+    btnAllDoneShow();
+    btnClearCompletedShow();
+
     checked = !checked;
     localStorage.setItem("TODO", JSON.stringify(LIST));
 }
@@ -193,24 +201,28 @@ function checkedAll() {
 document.getElementById("clearComplete").addEventListener("click", clearComplete, false);
 
 function clearComplete() {
-  const done = document.querySelectorAll('button[type=button]');
-  Object.keys(done).forEach(function(i) {
-    if(done[i].parentNode.classList.contains(COMPLETED) == true) {
-      removeToDo(done[i]);
-      LIST.splice(done[i], 1);
-    }
-  });
-  filterSelection(activeFilterJob);
-  filterShow(LIST.length);
-  btnAllDoneShow()
-  btnClearCompletedShow()
-  checked = !checked;
-  localStorage.setItem("TODO", JSON.stringify(LIST));
+    const done = document.querySelectorAll('button[type=button]');
+
+    Object.keys(done).forEach(function(i) {
+        if(done[i].parentNode.classList.contains(COMPLETED) == true) {
+        const checkIndex = LIST.findIndex(element => element.done == true);
+
+            removeToDo(done[i]);
+            LIST.splice(checkIndex, 1);
+        }
+    });
+    filterSelection(activeFilterJob);
+    filterShow(LIST.length);
+    btnAllDoneShow();
+    btnClearCompletedShow();
+
+    checked = !checked;
+    localStorage.setItem("TODO", JSON.stringify(LIST));
 }
 
 // completeDelete ===========
 // ==========================
-function removeToDo(element){
+function removeToDo(element) {
     element.parentNode.parentNode.removeChild(element.parentNode);
 }
 
@@ -236,25 +248,27 @@ function completeToDo(element) {
     itemsLeft(activeLength.length);
 }
 
-list.addEventListener("click", function(event){
+list.addEventListener("click", function(event) {
     const element = event.target;
     const elementJob = element.attributes.job.value;
     const itemId = element.parentNode.getAttribute("id");
     const index = LIST.findIndex(element => element.id == itemId);
    
-    if(elementJob == COMPLETED){
-        checkIndex = index;
+    if(elementJob == COMPLETED) {
         completeToDo(element);
         filterSelection(activeFilterJob);
+
+        checkIndex = index;
         checked = !checked;
-    }else if(elementJob == "delete"){
+    } else if(elementJob == "delete") {
         removeToDo(element);
         LIST.splice(index, 1);
     }
     itemsLeft(activeLength.length);
     filterShow(LIST.length);
-    btnAllDoneShow()
-    btnClearCompletedShow()
+    btnAllDoneShow();
+    btnClearCompletedShow();
+
     localStorage.setItem("TODO", JSON.stringify(LIST));
 });
 
