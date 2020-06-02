@@ -10,64 +10,68 @@
         <header class="learn__headerAside headerAside">
             <h3 class="headerAside__title">JavaScript</h3>
             <h5>Vanilla JavaScript Example</h5>
-            <a class="headerAside__href" href="https://github.com/tastejs/todomvc/tree/gh-pages/examples/vanillajs">Source</a>
+            <a class="headerAside__href href" href="https://github.com/tastejs/todomvc/tree/gh-pages/examples/vanillajs">Source</a>
         </header>
         <blockquote class="learn__blackqote blackqote">
             <p class="blackqote__text">
                 <em>JavaScript® (often shortened to JS) is a lightweight, interpreted, object-oriented language with first-class functions, most known as the scripting language for Web pages, but used in many non-browser environments as well such as node.js or Apache CouchDB.</em>
             </p>
             <footer class="blackqote__footer">
-                <a class="blackqote__href" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a>
+                <a class="blackqote__href href" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">JavaScript</a>
             </footer>
         </blockquote>
         <footer class="lear__learnFooter learnFooter">
-            <em class="learnFooter__text">If you have other helpful links to share, or find any of the links above no longer work, please <a class="learnFooter__href" href="https://github.com/tastejs/todomvc/issues">let us know</a>.</em>
+            <em class="learnFooter__text">If you have other helpful links to share, or find any of the links above no longer work, please <a class="learnFooter__href href" href="https://github.com/tastejs/todomvc/issues">let us know</a>.</em>
         </footer>
     </aside>
 
     <main class="mainСontainer">
         <section class="mainСontainer__content content">
             <h1 class="content__title">todos</h1>
-            <div class="boxShadow">
+            <div class="content__boxShadow" id="content">
                 <div class="inner">
-                    <div class="wrapper"><button class="content__allDone allDone" id="all_done"><!--img--></button></div>
-                    <input type="text" class="content__newToDo" placeholder="What needs to be done?" id="input">
+                    <div class="wrapper"><button class="js-content__allDone content__allDone allDone" job="checkeAll"><!--img--></button></div>
+                    <input type="text" class="content__newToDo inputToDo" placeholder="What needs to be done?" id="inputAddItem">
                 </div>
                
                 <ul class="content__list list" id="list">
-                    <!-- <li class="filterDiv item ${MADE} show" id="${id}">
-                            <button type=button class="${DONE}" job="complete" id="${id}"></button>
-                            <span class="textItem ${LINE}">${toDo}</span>
-                            <button class="destroy" job="delete"></button>
-                         </li> -->
+                    <!-- `<li class="js-itemFilter list__item item ${MADE} ${SHOW}" id="${id}">
+                            <button type=button class="${DONE}" job="${COMPLETED}" id="${id}"></button>
+                            <span class="textItem ${LINE}" job="read">${toDo}</span>
+                            <button class="destroy" job="${DELETE}"></button>
+                          </li>`; -->
                 </ul> 
     
-                <sectioin class="content__filter filter showFilter">
-                    <div class="todoCount">
-                        <span id="num">2</span>
-                        items left
+                <sectioin class="js-filter content__filter filter show">
+                    <div class="filter_wrapper">
+                        <div class="content__todoCount todoCount">
+                            <span id="num">0</span>
+                            items left
+                        </div>
+                        <div class="content__filterSwitch filterSwitch" id="filterBtnContainer">
+                            <button class="filterSwitch__btn included" job="all">All</button>
+                            <button class="filterSwitch__btn" job="active">Active</button>
+                            <button class="filterSwitch__btn" job="completedFilter">Complete</button>
+                        </div>
+                        <div class="wrapperClearCompleted">
+                            <button class="js-clearCompleted clearCompleted" job="clearCompleted">Clear completed</button>
+                        </div>
                     </div>
-                    <div class="filterSwitch" id="myBtnContainer">
-                        <button class="btn included" job="all">All</button>
-                        <button class="btn" job="active">Active</button>
-                        <button class="btn" job="completed">Complete</button>
-                    </div>
-                    <button class="clearCompleted clearCompleted_display" id="clearComplete">Clear completed</button>
                 </section>
                 
-                <footer class="info">
+                <footer class="mainСontainer__info info">
                     <p>Double-click to edit a todo</p>
                     <p>
                         Created by
-                        <a class="decoration" href="https://twitter.com/oscargodson">Oscar Godson</a>
+                        <a class="info_decoration" href="https://twitter.com/oscargodson">Oscar Godson</a>
                     </p>
                     <p>
                         Refactored by
-                        <a class="decoration" href="https://github.com/cburgmer">Christoph Burgmer</a>
+                        <a class="info_decoration" href="https://github.com/cburgmer">Christoph Burgmer</a>
                     </p>
                     <p>
                         Part of 
-                        <a class="decoration" href="http://todomvc.com/">TodoMVC</a>
+                        <a class="info_decoration" href="http://todomvc.com/">TodoMVC</a>
                     </p>
                 </footer>
             </div>

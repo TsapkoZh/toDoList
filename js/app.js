@@ -1,17 +1,20 @@
 const list = document.getElementById("list");
-const input = document.getElementById("input");
+const content = document.getElementById("content");
 
 const ACTIVE = "active";
 const COMPLETED = "completed";
+const DELETE = "delete";
 const CHECK = "toggleDone";
 const UNCHECK = "toggleNotDone";
 const LINE_THROUGH = "lineThrough";
+const SHOW = "show";
 
-let LIST, id;
-let checkIndex = 0;
+let LIST, id, element, elementJob, itemId, index, editingIndex;
+let input = document.getElementById("inputAddItem");
 let data = localStorage.getItem("TODO");
 let activeLength = document.getElementsByClassName(ACTIVE);
 let completedLength = document.getElementsByClassName(COMPLETED);
+let activeFilterJob = "all";
 
 if (data) {
     LIST = JSON.parse(data);
@@ -40,25 +43,25 @@ function itemsLeft(num) {
 
 function filterShow(itemLength) {
     if(itemLength > 0) {
-        document.querySelector(".filter").classList.remove("showFilter");
+        document.querySelector(".js-filter").classList.add(SHOW);
     } else {
-        document.querySelector(".filter").classList.add("showFilter");
+        document.querySelector(".js-filter").classList.remove(SHOW);
     }
 }
 
 function btnAllDoneShow() {
     if(LIST.length > 0) {
-        document.querySelector(".content__allDone").classList.add("show");
+        document.querySelector(".js-content__allDone").classList.add(SHOW);
     } else {
-        document.querySelector(".content__allDone").classList.remove("show");
+        document.querySelector(".js-content__allDone").classList.remove(SHOW);
     }
 }
 
 function btnClearCompletedShow() {
     if(completedLength.length > 0) {
-        document.querySelector(".clearCompleted").classList.add("show");
+        document.querySelector(".js-clearCompleted").classList.add(SHOW);
     } else {
-        document.querySelector(".clearCompleted").classList.remove("show");
+        document.querySelector(".js-clearCompleted").classList.remove(SHOW);
     }
 }
 
@@ -69,10 +72,10 @@ function addToDo(toDo, id, done) {
     const DONE = done ? CHECK : UNCHECK;
     const LINE = done ? LINE_THROUGH : "";
 
-    const item = `<li class="filterDiv item ${MADE} show" id="${id}">
-                      <button type=button class="${DONE}" job="completed" id="${id}"></button>
-                      <span class="textItem ${LINE}">${toDo}</span>
-                      <button class="destroy" job="delete"></button>
+    const item = `<li class="js-itemFilter list__item item ${MADE} ${SHOW}" id="${id}">
+                      <button type=button class="${DONE}" job="${COMPLETED}" id="${id}"></button>
+                      <span class="textItem ${LINE}" job="read">${toDo}</span>
+                      <button class="destroy" job="${DELETE}"></button>
                   </li>`;
 
     const position = "beforeend";
@@ -80,28 +83,60 @@ function addToDo(toDo, id, done) {
     list.insertAdjacentHTML(position, item);
 }
 
-document.addEventListener("keyup", function(event) {
-    if(event.keyCode == 13){
-        const toDo = input.value;
+function keyupAddToDo() {
+    const toDo = input.value;
         
-        if(toDo){
-            addToDo(toDo, id, false);
-            LIST.push({
-                name : toDo,
-                id : id,
-                done : false,
-            });
+    if(toDo){
+        addToDo(toDo, id, false);
+        LIST.push({
+            name : toDo,
+            id : id,
+            done : false,
+        });
 
-            id++;
+        id++;
 
-            itemsLeft(activeLength.length);
-            filterSelection(activeFilterJob);
-            filterShow(LIST.length);
-            btnAllDoneShow();
+        itemsLeft(activeLength.length);
+        filterSelection(activeFilterJob);
+        filterShow(LIST.length);
+        btnAllDoneShow();
 
-            localStorage.setItem("TODO", JSON.stringify(LIST));
+        localStorage.setItem("TODO", JSON.stringify(LIST));
+    }
+    input.value = "";
+}
+
+function removItems() {
+    const done = document.querySelectorAll('li');
+
+    Object.keys(done).forEach(function(i) {
+        done[i].parentNode.removeChild(done[i]);
+    });
+}
+
+function keyupEditToDo() {
+    const toDo = input.value;
+
+    if(toDo) {
+        LIST[editingIndex].name = toDo;
+        localStorage.setItem("TODO", JSON.stringify(LIST));
+        removItems();
+        loadList(LIST);
+    }
+    input.value = "";
+}
+
+document.addEventListener("keyup", function(event) {
+    if(event.keyCode == 13) {
+        if(input.id == "inputAddItem") {
+            keyupAddToDo();
+        } else {
+            keyupEditToDo();
         }
-        input.value = "";
+    }
+    if(event.keyCode == 27) {
+        removItems();
+        loadList(LIST);
     }
 });
 
@@ -109,13 +144,14 @@ document.addEventListener("keyup", function(event) {
 // ==========================
 filterSelection("all")
 
-function filterSelection (name) {
-    let className = document.getElementsByClassName("filterDiv");
+function filterSelection(name) {
+    let className = document.getElementsByClassName("js-itemFilter");
+    activeFilterJob = name;
 
     if(name == "all") name = "";
     Object.keys(className).forEach(function(i) {
-        removeClass(className[i], "show");
-        if (className[i].className.indexOf(name) > -1) addClass(className[i], "show");
+        removeClass(className[i], SHOW);
+        if (className[i].className.indexOf(name) > -1) addClass(className[i], SHOW);
     });
 }
 
@@ -141,11 +177,12 @@ function removeClass(element, name) {
         arr1.splice(arr1.indexOf(arr2[i]), 1);
         }
     });
+
     element.className = arr1.join(" ");
 }
 
-let btnContainer = document.getElementById("myBtnContainer");
-let btns = btnContainer.getElementsByClassName("btn");
+let btnContainer = document.getElementById("filterBtnContainer");
+let btns = btnContainer.getElementsByClassName("filterSwitch__btn");
 
 Object.keys(btns).forEach(function(i) {
     btns[i].addEventListener("click", function() {
@@ -155,80 +192,31 @@ Object.keys(btns).forEach(function(i) {
     });
 });
 
-let activeFilterJob = "all";
-
-myBtnContainer.addEventListener("click", function(event) {
-    const element = event.target;
-    const filterJob = element.attributes.job.value;
-    
-    if(filterJob == "all") {
-        filterSelection("all");
-    }
-    if(filterJob == COMPLETED) {
-        filterSelection(COMPLETED);
-    }
-    if(filterJob == ACTIVE) {
-        filterSelection(ACTIVE);
-    }
-    activeFilterJob = filterJob;
-});
-
-// btnAllDone ==============
+// btnDone =================
 // =========================
-document.getElementById("all_done").addEventListener("click", checkedAll, false);
-
 let checked = false;
 
-function checkedAll() {
+function checkeAll() {
     const btnCheck = document.querySelectorAll('button[type=button]');
 
     Object.keys(btnCheck).forEach(function(i) {
         if(btnCheck[i].parentNode.classList.contains(ACTIVE) == checked) {
-        completeToDo(btnCheck[i]);
+            completeToDo(btnCheck[i]);
         } 
+
         completeToDo(btnCheck[i]);
     });
+
     filterSelection(activeFilterJob);
     btnAllDoneShow();
     btnClearCompletedShow();
 
     checked = !checked;
     localStorage.setItem("TODO", JSON.stringify(LIST));
-}
-
-// btnClearComplete ========
-// =========================
-document.getElementById("clearComplete").addEventListener("click", clearComplete, false);
-
-function clearComplete() {
-    const done = document.querySelectorAll('button[type=button]');
-
-    Object.keys(done).forEach(function(i) {
-        if(done[i].parentNode.classList.contains(COMPLETED) == true) {
-        const checkIndex = LIST.findIndex(element => element.done == true);
-
-            removeToDo(done[i]);
-            LIST.splice(checkIndex, 1);
-        }
-    });
-    filterSelection(activeFilterJob);
-    filterShow(LIST.length);
-    btnAllDoneShow();
-    btnClearCompletedShow();
-
-    checked = !checked;
-    localStorage.setItem("TODO", JSON.stringify(LIST));
-}
-
-// completeDelete ===========
-// ==========================
-function removeToDo(element) {
-    element.parentNode.parentNode.removeChild(element.parentNode);
 }
 
 function completeToDo(element) {
-    const itemId = element.parentNode.getAttribute("id");
-    checkIndex = LIST.findIndex(element => element.id == itemId);
+    itemIndex(element);
 
     if(element.parentNode.classList.contains(ACTIVE) == true) {
         element.parentNode.classList.add(COMPLETED);
@@ -236,40 +224,120 @@ function completeToDo(element) {
         element.classList.add(CHECK);
         element.classList.remove(UNCHECK);
         element.parentNode.querySelector(".textItem").classList.add(LINE_THROUGH);
-        LIST[checkIndex].done = true;
+        LIST[index].done = true;
     } else {
         element.parentNode.classList.remove(COMPLETED);
         element.parentNode.classList.add(ACTIVE);
         element.classList.remove(CHECK);
         element.classList.add(UNCHECK);
         element.parentNode.querySelector(".textItem").classList.remove(LINE_THROUGH);
-        LIST[checkIndex].done = false;
+        LIST[index].done = false;
     }
-    itemsLeft(activeLength.length);
 }
 
-list.addEventListener("click", function(event) {
-    const element = event.target;
-    const elementJob = element.attributes.job.value;
-    const itemId = element.parentNode.getAttribute("id");
-    const index = LIST.findIndex(element => element.id == itemId);
-   
+// btnClear ================
+// =========================
+function clearCompleted() {
+    const done = document.querySelectorAll('button[type=button]');
+
+    Object.keys(done).forEach(function(i) {
+        if(done[i].parentNode.classList.contains(COMPLETED) == true) {
+            const index = LIST.findIndex(element => element.done == true);
+            removeToDo(done[i]);
+            LIST.splice(index, 1);
+        }
+});
+
+    filterSelection(activeFilterJob);
+    filterShow(LIST.length);
+    btnAllDoneShow();
+    btnClearCompletedShow();
+
+    checked = !checked;
+    localStorage.setItem("TODO", JSON.stringify(LIST));
+}
+
+function removeToDo(element) {
+    element.parentNode.parentNode.removeChild(element.parentNode);
+}
+
+function targetElement() {
+    element = event.target;
+    elementJob = element.attributes.job.value;
+}
+
+function itemIndex(element) {
+    itemId = element.parentNode.getAttribute("id");
+    index = LIST.findIndex(element => element.id == itemId);
+}
+
+function clickButton() {
+    targetElement();
+    itemIndex(element);
+
     if(elementJob == COMPLETED) {
         completeToDo(element);
         filterSelection(activeFilterJob);
-
-        checkIndex = index;
         checked = !checked;
-    } else if(elementJob == "delete") {
+    }
+    if(elementJob == DELETE) { 
         removeToDo(element);
         LIST.splice(index, 1);
     }
+    if(elementJob == "clearCompleted") {
+        clearCompleted();
+    }
+    if(elementJob == "all") {
+        filterSelection("all");
+    }
+    if(elementJob == "completedFilter") {
+        filterSelection(COMPLETED);
+    }
+    if(elementJob == ACTIVE) {
+        filterSelection(ACTIVE);
+    }
+    if(elementJob == "checkeAll") {
+        checkeAll();
+    }
+
     itemsLeft(activeLength.length);
     filterShow(LIST.length);
     btnAllDoneShow();
     btnClearCompletedShow();
 
     localStorage.setItem("TODO", JSON.stringify(LIST));
-});
+}
+
+function editItem() {
+    if(elementJob == "read") {
+        const item = `<li><input type="text" class="content__editToDo" value="${LIST[index].name}" id="inputEditItem"></li>`;
+        const position = "afterend";
+
+        element.parentNode.insertAdjacentHTML(position, item);
+        input = document.getElementById("inputEditItem");
+        removeToDo(element);
+        editingIndex = index;
+    }
+}
+
+content.addEventListener("click", clickButton, false)
+
+list.addEventListener("dblclick", editItem, false);
 
 
+
+
+
+// ================================================
+// content.addEventListener("click", function() {
+//     targetElement()
+//     itemIndex(element)
+//     console.log(LIST, "LIST")
+//     console.log(element, "element")
+//     console.log(elementJob, "elementJob")
+//     console.log(itemId, "itemId")
+//     console.log(index, "index")
+//     console.log(editingIndex, "editingIndex")
+//     console.log(input, "input")
+//     console.log(btns, "btns")
+// });
