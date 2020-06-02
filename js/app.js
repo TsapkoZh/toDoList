@@ -72,7 +72,7 @@ function addToDo(toDo, id, done) {
     const DONE = done ? CHECK : UNCHECK;
     const LINE = done ? LINE_THROUGH : "";
 
-    const item = `<li class="js-itemFilter list__item item ${MADE} ${SHOW}" id="${id}">
+    const item = `<li class="js-SearchElem list__item item ${MADE} ${SHOW}" id="${id}">
                       <button type=button class="${DONE}" job="${COMPLETED}" id="${id}"></button>
                       <span class="textItem ${LINE}" job="read">${toDo}</span>
                       <button class="destroy" job="${DELETE}"></button>
@@ -106,8 +106,8 @@ function keyupAddToDo() {
     input.value = "";
 }
 
-function removItems() {
-    const done = document.querySelectorAll('li');
+function removeItems() {
+    const done = document.querySelectorAll('.js-SearchElem');
 
     Object.keys(done).forEach(function(i) {
         done[i].parentNode.removeChild(done[i]);
@@ -120,32 +120,18 @@ function keyupEditToDo() {
     if(toDo) {
         LIST[editingIndex].name = toDo;
         localStorage.setItem("TODO", JSON.stringify(LIST));
-        removItems();
+        removeItems();
         loadList(LIST);
     }
     input.value = "";
 }
-
-document.addEventListener("keyup", function(event) {
-    if(event.keyCode == 13) {
-        if(input.id == "inputAddItem") {
-            keyupAddToDo();
-        } else {
-            keyupEditToDo();
-        }
-    }
-    if(event.keyCode == 27) {
-        removItems();
-        loadList(LIST);
-    }
-});
 
 // filter ===================
 // ==========================
 filterSelection("all")
 
 function filterSelection(name) {
-    let className = document.getElementsByClassName("js-itemFilter");
+    let className = document.getElementsByClassName("js-SearchElem");
     activeFilterJob = name;
 
     if(name == "all") name = "";
@@ -261,6 +247,8 @@ function removeToDo(element) {
     element.parentNode.parentNode.removeChild(element.parentNode);
 }
 
+// clickKeyup ==============
+// =========================
 function targetElement() {
     element = event.target;
     elementJob = element.attributes.job.value;
@@ -310,7 +298,7 @@ function clickButton() {
 
 function editItem() {
     if(elementJob == "read") {
-        const item = `<li><input type="text" class="content__editToDo" value="${LIST[index].name}" id="inputEditItem"></li>`;
+        const item = `<li class="js-SearchElem"><input type="text" class="content__editToDo" value="${LIST[index].name}" id="inputEditItem"></li>`;
         const position = "afterend";
 
         element.parentNode.insertAdjacentHTML(position, item);
@@ -320,10 +308,25 @@ function editItem() {
     }
 }
 
-content.addEventListener("click", clickButton, false)
+function keyupListener() {
+    if(event.keyCode == 13) {
+        if(input.id == "inputAddItem") {
+            keyupAddToDo();
+        } else {
+            keyupEditToDo();
+        }
+    }
+    if(event.keyCode == 27) {
+        removeItems();
+        loadList(LIST);
+    }
+}
+
+content.addEventListener("click", clickButton, false);
 
 list.addEventListener("dblclick", editItem, false);
 
+content.addEventListener("keyup", keyupListener, false);
 
 
 
