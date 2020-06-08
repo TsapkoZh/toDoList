@@ -1,9 +1,9 @@
-const list = document.getElementById("list");
+const listToDo = localStorage.getItem("TODO");
+const itemsList = document.getElementById("itemsList");
 const content = document.getElementById("content");
 
 const ACTIVE = "active";
 const COMPLETED = "completed";
-const DELETE = "delete";
 const CHECK = "toggleDone";
 const UNCHECK = "toggleNotDone";
 const LINE_THROUGH = "lineThrough";
@@ -11,54 +11,50 @@ const SHOW = "show";
 
 let LIST, id, element, elementJob, itemId, index, editingIndex;
 let input = document.getElementById("inputAddItem");
-let data = localStorage.getItem("TODO");
-let activeLength = document.getElementsByClassName(ACTIVE);
-let completedLength = document.getElementsByClassName(COMPLETED);
+let activeItems = document.getElementsByClassName(ACTIVE);
 let activeFilterJob = "all";
 
-if (data) {
-    LIST = JSON.parse(data);
+if (listToDo) {
+    LIST = JSON.parse(listToDo);
     id = LIST.length;
 
     loadList(LIST);
-    itemsLeft(activeLength.length);
-    filterShow(LIST.length);
-    btnAllDoneShow();
-    btnClearCompletedShow();
+    countItemsLeft(activeItems.length);
+    showFilter(LIST.length);
+    showBtnAllDone(LIST.length);
+    showBtnClearCompleted();
 } else {
     LIST = [];
     id = 0;
 }
 
 function loadList(array) {
-    array.forEach(function(item) {
-        addToDo(item.name, item.id, item.done);
-    });
+    array.forEach((item) => {addToDo(item.name, item.id, item.done);});
 }
 
-function itemsLeft(num) {
-    activeLength = document.getElementsByClassName(ACTIVE);
+function countItemsLeft(num) {
+    activeItems = document.getElementsByClassName(ACTIVE);
     document.getElementById("num").textContent = num;
 }
 
-function filterShow(itemLength) {
-    if(itemLength > 0) {
+function showFilter(listLength) {
+    if(listLength > 0) {
         document.querySelector(".js-filter").classList.add(SHOW);
     } else {
         document.querySelector(".js-filter").classList.remove(SHOW);
     }
 }
 
-function btnAllDoneShow() {
-    if(LIST.length > 0) {
+function showBtnAllDone(listLength) {
+    if(listLength > 0) {
         document.querySelector(".js-content__allDone").classList.add(SHOW);
     } else {
         document.querySelector(".js-content__allDone").classList.remove(SHOW);
     }
 }
 
-function btnClearCompletedShow() {
-    if(completedLength.length > 0) {
+function showBtnClearCompleted() {
+    if(activeItems.length < LIST.length) {
         document.querySelector(".js-clearCompleted").classList.add(SHOW);
     } else {
         document.querySelector(".js-clearCompleted").classList.remove(SHOW);
@@ -74,16 +70,16 @@ function addToDo(toDo, id, done) {
 
     const item = `<li class="js-SearchElem list__item item ${MADE} ${SHOW}" id="${id}">
                       <button type=button class="${DONE}" job="${COMPLETED}" id="${id}"></button>
-                      <span class="textItem ${LINE}" job="read">${toDo}</span>
-                      <button class="destroy" job="${DELETE}"></button>
+                      <span class="textItem ${LINE}" job="edit">${toDo}</span>
+                      <button class="destroy" job="delete"></button>
                   </li>`;
 
     const position = "beforeend";
     
-    list.insertAdjacentHTML(position, item);
+    itemsList.insertAdjacentHTML(position, item);
 }
 
-function keyupAddToDo() {
+function handleKeyUpAddToDo() {
     const toDo = input.value;
         
     if(toDo){
@@ -96,10 +92,10 @@ function keyupAddToDo() {
 
         id++;
 
-        itemsLeft(activeLength.length);
+        countItemsLeft(activeItems.length);
         filterSelection(activeFilterJob);
-        filterShow(LIST.length);
-        btnAllDoneShow();
+        showFilter(LIST.length);
+        showBtnAllDone(LIST.length);
 
         localStorage.setItem("TODO", JSON.stringify(LIST));
     }
@@ -108,13 +104,10 @@ function keyupAddToDo() {
 
 function removeItems() {
     const done = document.querySelectorAll('.js-SearchElem');
-
-    Object.keys(done).forEach(function(i) {
-        done[i].parentNode.removeChild(done[i]);
-    });
+    Object.keys(done).forEach(i => {done[i].parentNode.removeChild(done[i]);});
 }
 
-function keyupEditToDo() {
+function handleKeyUpEditToDo() {
     const toDo = input.value;
 
     if(toDo) {
@@ -131,24 +124,26 @@ function keyupEditToDo() {
 filterSelection("all")
 
 function filterSelection(name) {
-    let className = document.getElementsByClassName("js-SearchElem");
+    const className = document.getElementsByClassName("js-SearchElem");
     activeFilterJob = name;
 
     if(name == "all") name = "";
-    Object.keys(className).forEach(function(i) {
+    Object.keys(className).forEach(i => {
         removeClass(className[i], SHOW);
-        if (className[i].className.indexOf(name) > -1) addClass(className[i], SHOW);
+        if(className[i].className.indexOf(name) > -1) {
+            addClass(className[i], SHOW);
+        }
     });
 }
 
 function addClass(element, name) {
-    let  arr1, arr2;
+    let arr1, arr2;
 
     arr1 = element.className.split(" ");
     arr2 = name.split(" ");
-        Object.keys(arr2).forEach(function(i) {
-        if(arr1.indexOf(arr2[i]) == -1) {
-        element.className += " " + arr2[i];
+        Object.keys(arr2).forEach(i => {
+            if(arr1.indexOf(arr2[i]) == -1) {
+                element.className += " " + arr2[i];
         }
     });
 }
@@ -158,23 +153,23 @@ function removeClass(element, name) {
 
     arr1 = element.className.split(" ");
     arr2 = name.split(" ");
-    Object.keys(arr2).forEach(function(i) {
+    Object.keys(arr2).forEach(i => {
         while (arr1.indexOf(arr2[i]) > -1) {
-        arr1.splice(arr1.indexOf(arr2[i]), 1);
+            arr1.splice(arr1.indexOf(arr2[i]), 1);
         }
     });
 
     element.className = arr1.join(" ");
 }
 
-let btnContainer = document.getElementById("filterBtnContainer");
-let btns = btnContainer.getElementsByClassName("filterSwitch__btn");
+const btnContainer = document.getElementById("filterBtnContainer");
+const btns = btnContainer.getElementsByClassName("filterSwitch__btn");
 
-Object.keys(btns).forEach(function(i) {
-    btns[i].addEventListener("click", function() {
+Object.keys(btns).forEach(i => {
+    btns[i].addEventListener("click", (elem) => {
         let current = document.getElementsByClassName("included");
         current[0].className = current[0].className.replace(" included", "");
-        this.className += " included";
+        elem.target.className += " included";
     });
 });
 
@@ -185,7 +180,7 @@ let checked = false;
 function checkeAll() {
     const btnCheck = document.querySelectorAll('button[type=button]');
 
-    Object.keys(btnCheck).forEach(function(i) {
+    Object.keys(btnCheck).forEach(i => {
         if(btnCheck[i].parentNode.classList.contains(ACTIVE) == checked) {
             completeToDo(btnCheck[i]);
         } 
@@ -194,15 +189,15 @@ function checkeAll() {
     });
 
     filterSelection(activeFilterJob);
-    btnAllDoneShow();
-    btnClearCompletedShow();
+    showBtnAllDone(LIST.length);
+    showBtnClearCompleted();
 
     checked = !checked;
     localStorage.setItem("TODO", JSON.stringify(LIST));
 }
 
 function completeToDo(element) {
-    itemIndex(element);
+    getIndex(element);
 
     if(element.parentNode.classList.contains(ACTIVE) == true) {
         element.parentNode.classList.add(COMPLETED);
@@ -235,9 +230,9 @@ function clearCompleted() {
 });
 
     filterSelection(activeFilterJob);
-    filterShow(LIST.length);
-    btnAllDoneShow();
-    btnClearCompletedShow();
+    showFilter(LIST.length);
+    showBtnAllDone(LIST.length);
+    showBtnClearCompleted();
 
     checked = !checked;
     localStorage.setItem("TODO", JSON.stringify(LIST));
@@ -254,21 +249,21 @@ function targetElement() {
     elementJob = element.attributes.job.value;
 }
 
-function itemIndex(element) {
+function getIndex(element) {
     itemId = element.parentNode.getAttribute("id");
     index = LIST.findIndex(element => element.id == itemId);
 }
 
-function clickButton() {
+function handleClick() {
     targetElement();
-    itemIndex(element);
+    getIndex(element);
 
     if(elementJob == COMPLETED) {
         completeToDo(element);
         filterSelection(activeFilterJob);
         checked = !checked;
     }
-    if(elementJob == DELETE) { 
+    if(elementJob == "delete") { 
         removeToDo(element);
         LIST.splice(index, 1);
     }
@@ -288,16 +283,16 @@ function clickButton() {
         checkeAll();
     }
 
-    itemsLeft(activeLength.length);
-    filterShow(LIST.length);
-    btnAllDoneShow();
-    btnClearCompletedShow();
+    countItemsLeft(activeItems.length);
+    showFilter(LIST.length);
+    showBtnAllDone(LIST.length);
+    showBtnClearCompleted();
 
     localStorage.setItem("TODO", JSON.stringify(LIST));
 }
 
-function editItem() {
-    if(elementJob == "read") {
+function handleDblClick() {
+    if(elementJob == "edit") {
         const item = `<li class="js-SearchElem"><input type="text" class="content__editToDo" value="${LIST[index].name}" id="inputEditItem"></li>`;
         const position = "afterend";
 
@@ -308,12 +303,12 @@ function editItem() {
     }
 }
 
-function keyupListener() {
+function handleKeyUp() {
     if(event.keyCode == 13) {
         if(input.id == "inputAddItem") {
-            keyupAddToDo();
+            handleKeyUpAddToDo();
         } else {
-            keyupEditToDo();
+            handleKeyUpEditToDo();
         }
     }
     if(event.keyCode == 27) {
@@ -322,25 +317,8 @@ function keyupListener() {
     }
 }
 
-content.addEventListener("click", clickButton, false);
+content.addEventListener("click", handleClick, false);
 
-list.addEventListener("dblclick", editItem, false);
+itemsList.addEventListener("dblclick", handleDblClick, false);
 
-content.addEventListener("keyup", keyupListener, false);
-
-
-
-
-// ================================================
-// content.addEventListener("click", function() {
-//     targetElement()
-//     itemIndex(element)
-//     console.log(LIST, "LIST")
-//     console.log(element, "element")
-//     console.log(elementJob, "elementJob")
-//     console.log(itemId, "itemId")
-//     console.log(index, "index")
-//     console.log(editingIndex, "editingIndex")
-//     console.log(input, "input")
-//     console.log(btns, "btns")
-// });
+content.addEventListener("keyup", handleKeyUp, false);

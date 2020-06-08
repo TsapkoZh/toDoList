@@ -108,7 +108,7 @@ body {
     justify-content: center;
 }
 
-.content__boxShadow {
+.content_boxShadow {
     background-color: white;
     background: rgb(255, 255, 255);
     box-shadow:
@@ -153,7 +153,7 @@ body {
     opacity: .6;
 }
 
-.inner {
+.content__btnAddToDo {
     display: flex;
     flex-direction: row;
     background-color: white;
