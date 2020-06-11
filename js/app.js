@@ -227,7 +227,7 @@ function clearCompleted() {
             removeToDo(done[i]);
             LIST.splice(index, 1);
         }
-});
+    });
 
     filterSelection(activeFilterJob);
     showFilter(LIST.length);
