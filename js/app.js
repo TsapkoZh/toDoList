@@ -81,25 +81,27 @@ function addToDo(toDo, id, done) {
 
 function handleKeyUpAddToDo() {
     const toDo = input.value;
-        
-    if(toDo){
-        addToDo(toDo, id, false);
-        LIST.push({
-            name : toDo,
-            id : id,
-            done : false,
-        });
 
-        id++;
-
-        countItemsLeft(activeItems.length);
-        filterSelection(activeFilterJob);
-        showFilter(LIST.length);
-        showBtnAllDone(LIST.length);
-
-        localStorage.setItem("TODO", JSON.stringify(LIST));
+    if (/\S/.test(toDo)) {
+        if(toDo){
+            addToDo(toDo, id, false);
+            LIST.push({
+                name : toDo,
+                id : id,
+                done : false,
+            });
+    
+            id++;
+    
+            countItemsLeft(activeItems.length);
+            filterSelection(activeFilterJob);
+            showFilter(LIST.length);
+            showBtnAllDone(LIST.length);
+    
+            localStorage.setItem("TODO", JSON.stringify(LIST));
+        }
+        input.value = "";
     }
-    input.value = "";
 }
 
 function removeItems() {
@@ -107,16 +109,18 @@ function removeItems() {
     Object.keys(done).forEach(i => {done[i].parentNode.removeChild(done[i]);});
 }
 
-function handleKeyUpEditToDo() {
+function handleEditToDo() {
     const toDo = input.value;
 
-    if(toDo) {
-        LIST[editingIndex].name = toDo;
-        localStorage.setItem("TODO", JSON.stringify(LIST));
-        removeItems();
-        loadList(LIST);
+    if (/\S/.test(toDo)) {
+        if(toDo) {
+            LIST[editingIndex].name = toDo;
+            localStorage.setItem("TODO", JSON.stringify(LIST));
+            removeItems();
+            loadList(LIST);
+        }
+        input.value = "";
     }
-    input.value = "";
 }
 
 // filter ===================
@@ -308,7 +312,7 @@ function handleKeyUp() {
         if(input.id == "inputAddItem") {
             handleKeyUpAddToDo();
         } else {
-            handleKeyUpEditToDo();
+            handleEditToDo();
         }
     }
     if(event.keyCode == 27) {
@@ -316,6 +320,13 @@ function handleKeyUp() {
         loadList(LIST);
     }
 }
+
+document.addEventListener('click', function(event) {
+    const e = document.getElementById("inputEditItem");
+        if (!e.contains(event.target)) {
+            handleEditToDo()
+        };
+});
 
 content.addEventListener("click", handleClick, false);
 

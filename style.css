@@ -34,7 +34,7 @@ body {
 .mainСontainer {
     max-width: 100%;
     height: 100%;
-    margin: 0 auto;
+    margin: 0 auto 70px ;
     transition: transform 1s;
 }
 
@@ -131,17 +131,18 @@ input:-ms-input-placeholder {
 .item {
     position: relative;
     font-size: 1.2vw;
-    padding: .5vw 4.1vw .75vw ;
+    padding: .75vw 4.1vw .85vw ;
     border-width: 1px;
     border-top: 1px solid rgba(128, 128, 128, 0.185);
     background-color: white;
-    vertical-align: middle;
 }
 
 .toggleNotDone {
     position: absolute;
     left: .85vw;
-    top: .8vw;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
     width: 1.6vw;
     height: 1.6vw;
     border: 1px solid rgba(75, 75, 75, 0.151);
@@ -149,6 +150,7 @@ input:-ms-input-placeholder {
     background-color: white;
     border-radius: 50%;
     transition: border .3s;
+    vertical-align: middle;
 }
 
 .toggleNotDone:hover {
@@ -158,7 +160,9 @@ input:-ms-input-placeholder {
 .toggleDone {
     position: absolute;
     left: .85vw;
-    top: .8vw;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
     width: 1.6vw;
     height: 1.6vw;
     border: 1px solid rgba(23, 116, 72, 0.384);
@@ -179,8 +183,11 @@ input:-ms-input-placeholder {
 }
 
 .textItem { 
-    position: relative;
     display: inline-block;
+    overflow-wrap: break-word;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
     line-height: 1.5vw;
     width: 21vw;
     transition: opacity .3s;
@@ -193,22 +200,29 @@ input:-ms-input-placeholder {
 
 .destroy { 
     position: absolute;
-    position: relative;
-    top: .1vw;
-    left: 2vw;
+    top: 0;
+    left: 27vw;
+    bottom: 0;
+    margin: auto 0;
     width: 1.6vw;
     height: 1.6vw;
-    font-size: 2.5vw;
-    font-weight: bold;
+    background-color: white;
     outline: none;
     border: none;
-    background-color: white;
     opacity: 0;
     transition: opacity .2s;
 }
 
 .item:hover .destroy {
-    opacity: .5;
+    opacity: 1;
+}
+
+.destroy:hover::after {
+    opacity: 1;
+}
+
+.destroy:hover::before {
+    opacity: 1;
 }
 
 .destroy::before {
@@ -218,8 +232,11 @@ input:-ms-input-placeholder {
     width: 1.3vw;
     height: .2vw;
     transform: rotate(45deg);
-    background-color: rgba(194, 66, 66, 0.897)
+    background-color: rgba(194, 66, 66, 0.897);
+    transition: opacity .2s;
+    opacity: .5;
 }
+
 .destroy::after {
     content: "";
     position: absolute;
@@ -227,7 +244,9 @@ input:-ms-input-placeholder {
     width: 1.3vw;
     height: .2vw;
     transform: rotate(-45deg);
-    background-color: rgba(194, 66, 66, 0.897)
+    background-color: rgba(194, 66, 66, 0.897);
+    transition: opacity .2s;
+    opacity: .5;
 }
 
 .destroyImg {
