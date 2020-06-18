@@ -30,6 +30,7 @@ if (listToDo) {
 
 function loadList(array) {
     array.forEach((item) => {addToDo(item.name, item.id, item.done);});
+    input = document.getElementById("inputAddItem");
 }
 
 function countItemsLeft(num) {
@@ -323,9 +324,10 @@ function handleKeyUp() {
 
 document.addEventListener('click', function(event) {
     const e = document.getElementById("inputEditItem");
-        if (!e.contains(event.target)) {
-            handleEditToDo()
-        };
+
+    if (!e.contains(event.target)) {
+        handleEditToDo()
+    };
 });
 
 content.addEventListener("click", handleClick, false);
