@@ -131,7 +131,6 @@ input:-ms-input-placeholder {
 .item {
     position: relative;
     font-size: 1.2vw;
-    padding: .75vw 4.1vw .85vw ;
     border-width: 1px;
     border-top: 1px solid rgba(128, 128, 128, 0.185);
     background-color: white;
@@ -187,6 +186,7 @@ input:-ms-input-placeholder {
     overflow-wrap: break-word;
     top: 0;
     bottom: 0;
+    padding: .85vw 4vw;
     margin: auto 0;
     line-height: 1.5vw;
     width: 21vw;
@@ -357,19 +357,15 @@ input:-ms-input-placeholder {
 
 .item {
     font-size: 16px;
-    padding: 7px 55px 10px;
 }
 
 .toggleNotDone {
-    left: 12px;
-    top: 11px;
     width: 24px;
     height: 24px;
 }
 
 .toggleDone {
-    left: 12px;
-    top: 11px;
+    left: 32px;
     width: 24px;
     height: 24px;
 }
@@ -377,11 +373,11 @@ input:-ms-input-placeholder {
 .textItem { 
     line-height: 20px;
     width: 278px;
+    padding: 10px 50px 10px;
 }
 
 .destroy { 
-    top: 2px;
-    left: 27px;
+    left: 367px; */
     width: 22px;
     height: 22px;
 }
@@ -421,9 +417,3 @@ input:-ms-input-placeholder {
 
 }
 
-@media (max-width: 1024px) {
-
-    .mainСontainer {
-        transform: translateX(-30%);
-    }
-}

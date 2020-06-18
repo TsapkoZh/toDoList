@@ -297,14 +297,16 @@ function handleClick() {
 }
 
 function handleDblClick() {
-    if(elementJob == "edit") {
-        const item = `<li class="js-SearchElem"><input type="text" class="content__editToDo" value="${LIST[index].name}" id="inputEditItem"></li>`;
-        const position = "afterend";
+    if(input == document.getElementById("inputAddItem")) {
+        if(elementJob == "edit") {
+            const item = `<li class="js-SearchElem"><input type="text" class="content__editToDo" value="${LIST[index].name}" id="inputEditItem"></li>`;
+            const position = "afterend";
 
-        element.parentNode.insertAdjacentHTML(position, item);
-        input = document.getElementById("inputEditItem");
-        removeToDo(element);
-        editingIndex = index;
+            element.parentNode.insertAdjacentHTML(position, item);
+            input = document.getElementById("inputEditItem");
+            removeToDo(element);
+            editingIndex = index;
+        }
     }
 }
 
@@ -323,11 +325,13 @@ function handleKeyUp() {
 }
 
 document.addEventListener('click', function(event) {
-    const e = document.getElementById("inputEditItem");
+    if(input == document.getElementById("inputEditItem")) {
+        const e = document.getElementById("inputEditItem");
 
-    if (!e.contains(event.target)) {
-        handleEditToDo()
-    };
+        if (!e.contains(event.target)) {
+            handleEditToDo()
+        };
+    }
 });
 
 content.addEventListener("click", handleClick, false);
