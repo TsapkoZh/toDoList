@@ -8,10 +8,12 @@ const CHECK = "toggleDone";
 const UNCHECK = "toggleNotDone";
 const LINE_THROUGH = "lineThrough";
 const SHOW = "show";
+const ENTER = 13;
+const ESC = 27;
 
 let LIST, id, element, elementJob, itemId, index, editingIndex;
 let input = document.getElementById("inputAddItem");
-let activeItems = document.getElementsByClassName(ACTIVE);
+let activeItems = document.querySelectorAll('[data-done="active"]');
 let activeFilterJob = "all";
 
 if (listToDo) {
@@ -34,31 +36,31 @@ function loadList(array) {
 }
 
 function countItemsLeft(num) {
-    activeItems = document.getElementsByClassName(ACTIVE);
+    activeItems = document.querySelectorAll('[data-done="active"]');
     document.getElementById("num").textContent = num;
 }
 
 function showFilter(listLength) {
     if(listLength > 0) {
-        document.querySelector(".js-filter").classList.add(SHOW);
+        document.querySelector('[data-filter="filter"]').classList.add(SHOW);
     } else {
-        document.querySelector(".js-filter").classList.remove(SHOW);
+        document.querySelector('[data-filter="filter"]').classList.remove(SHOW);
     }
 }
 
 function showBtnAllDone(listLength) {
     if(listLength > 0) {
-        document.querySelector(".js-content__allDone").classList.add(SHOW);
+        document.querySelector('[data-job="checkeAll"]').classList.add(SHOW);
     } else {
-        document.querySelector(".js-content__allDone").classList.remove(SHOW);
+        document.querySelector('[data-job="checkeAll"]').classList.remove(SHOW);
     }
 }
 
 function showBtnClearCompleted() {
     if(activeItems.length < LIST.length) {
-        document.querySelector(".js-clearCompleted").classList.add(SHOW);
+        document.querySelector('[data-job="clearCompleted"]').classList.add(SHOW);
     } else {
-        document.querySelector(".js-clearCompleted").classList.remove(SHOW);
+        document.querySelector('[data-job="clearCompleted"]').classList.remove(SHOW);
     }
 }
 
@@ -69,10 +71,10 @@ function addToDo(toDo, id, done) {
     const DONE = done ? CHECK : UNCHECK;
     const LINE = done ? LINE_THROUGH : "";
 
-    const item = `<li class="js-SearchElem list__item item ${MADE} ${SHOW}" id="${id}">
-                      <button type=button class="${DONE}" job="${COMPLETED}" id="${id}"></button>
-                      <span class="textItem ${LINE}" job="edit">${toDo}</span>
-                      <button class="destroy" job="delete"></button>
+    const item = `<li class=" list__item item ${SHOW}" id="${id}" data-search="searchElem" data-done="${MADE}">
+                      <button class="${DONE}" data-job="checkbox" id="${id}"></button>
+                      <span class="textItem ${LINE}" data-job="edit">${toDo}</span>
+                      <button class="destroy" data-job="delete"></button>
                   </li>`;
 
     const position = "beforeend";
@@ -83,140 +85,109 @@ function addToDo(toDo, id, done) {
 function handleKeyUpAddToDo() {
     const toDo = input.value;
 
-    if (/\S/.test(toDo)) {
-        if(toDo){
-            addToDo(toDo, id, false);
-            LIST.push({
-                name : toDo,
-                id : id,
-                done : false,
-            });
-    
-            id++;
-    
-            countItemsLeft(activeItems.length);
-            filterSelection(activeFilterJob);
-            showFilter(LIST.length);
-            showBtnAllDone(LIST.length);
-    
-            localStorage.setItem("TODO", JSON.stringify(LIST));
-        }
-        input.value = "";
+    if(toDo.trim()) {
+        addToDo(toDo, id, false);
+        LIST.push({
+            name : toDo,
+            id : id,
+            done : false,
+        });
+
+        id++;
+
+        countItemsLeft(activeItems.length);
+        filterSelection(activeFilterJob);
+        showFilter(LIST.length);
+        showBtnAllDone(LIST.length);
+
+        localStorage.setItem("TODO", JSON.stringify(LIST));
     }
+    input.value = "";
 }
 
 function removeItems() {
-    const done = document.querySelectorAll('.js-SearchElem');
+    const done = document.querySelectorAll('[data-search="searchElem"]');
     Object.keys(done).forEach(i => {done[i].parentNode.removeChild(done[i]);});
 }
 
 function handleEditToDo() {
     const toDo = input.value;
 
-    if (/\S/.test(toDo)) {
-        if(toDo) {
-            LIST[editingIndex].name = toDo;
-            localStorage.setItem("TODO", JSON.stringify(LIST));
-            removeItems();
-            loadList(LIST);
-        }
-        input.value = "";
+    if(toDo.trim()) {
+        LIST[editingIndex].name = toDo;
+        localStorage.setItem("TODO", JSON.stringify(LIST));
+        removeItems();
+        loadList(LIST);
     }
+    input.value = "";
 }
 
 // filter ===================
 // ==========================
 filterSelection("all")
 
-function filterSelection(name) {
-    const className = document.getElementsByClassName("js-SearchElem");
-    activeFilterJob = name;
+function filterSelection(filterName) {
+    const className = document.querySelectorAll('[data-search="searchElem"]');
+    activeFilterJob = filterName;
 
-    if(name == "all") name = "";
-    Object.keys(className).forEach(i => {
-        removeClass(className[i], SHOW);
-        if(className[i].className.indexOf(name) > -1) {
-            addClass(className[i], SHOW);
+    countItemsLeft(activeItems.length);
+    replaceClass(className, filterName);
+}
+
+function replaceClass(element, filterName) {
+    Object.keys(element).forEach(i => {
+        if(element[i].dataset.done !== filterName) {
+            element[i].classList.add(SHOW);
+        } else {
+            element[i].classList.remove(SHOW);
         }
     });
 }
 
-function addClass(element, name) {
-    let arr1, arr2;
+function switchFrame(element) {
+    const btnsFilter = document.querySelectorAll('[data-search="btnFilter"]');
 
-    arr1 = element.className.split(" ");
-    arr2 = name.split(" ");
-        Object.keys(arr2).forEach(i => {
-            if(arr1.indexOf(arr2[i]) == -1) {
-                element.className += " " + arr2[i];
-        }
+    Object.keys(btnsFilter).forEach(i => {
+        btnsFilter[i].classList.remove("included");
+        element.classList.add("included");
     });
 }
-
-function removeClass(element, name) {
-    let arr1, arr2;
-
-    arr1 = element.className.split(" ");
-    arr2 = name.split(" ");
-    Object.keys(arr2).forEach(i => {
-        while (arr1.indexOf(arr2[i]) > -1) {
-            arr1.splice(arr1.indexOf(arr2[i]), 1);
-        }
-    });
-
-    element.className = arr1.join(" ");
-}
-
-const btnContainer = document.getElementById("filterBtnContainer");
-const btns = btnContainer.getElementsByClassName("filterSwitch__btn");
-
-Object.keys(btns).forEach(i => {
-    btns[i].addEventListener("click", (elem) => {
-        let current = document.getElementsByClassName("included");
-        current[0].className = current[0].className.replace(" included", "");
-        elem.target.className += " included";
-    });
-});
 
 // btnDone =================
 // =========================
-let checked = false;
-
 function checkeAll() {
-    const btnCheck = document.querySelectorAll('button[type=button]');
+    const allElements = document.querySelectorAll('[data-job="checkbox"]');
+    const completedElements = document.querySelectorAll('[data-done="completed"]');
 
-    Object.keys(btnCheck).forEach(i => {
-        if(btnCheck[i].parentNode.classList.contains(ACTIVE) == checked) {
-            completeToDo(btnCheck[i]);
-        } 
-
-        completeToDo(btnCheck[i]);
+    Object.keys(allElements).forEach(i => {
+        if(completedElements.length === allElements.length) {
+            completeToDo(allElements[i]);
+        } else if (allElements[i].parentNode.getAttribute('data-done') === ACTIVE) {
+            completeToDo(allElements[i]);
+        }
     });
 
     filterSelection(activeFilterJob);
     showBtnAllDone(LIST.length);
     showBtnClearCompleted();
 
-    checked = !checked;
     localStorage.setItem("TODO", JSON.stringify(LIST));
 }
 
 function completeToDo(element) {
     getIndex(element);
 
-    if(element.parentNode.classList.contains(ACTIVE) == true) {
-        element.parentNode.classList.add(COMPLETED);
-        element.parentNode.classList.remove(ACTIVE);
+    if(element.parentNode.dataset.done === ACTIVE) {
+        element.parentNode.dataset.done = COMPLETED;
         element.classList.add(CHECK);
         element.classList.remove(UNCHECK);
-        element.parentNode.querySelector(".textItem").classList.add(LINE_THROUGH);
+        element.parentNode.querySelector('[data-job="edit"]').classList.add(LINE_THROUGH);
         LIST[index].done = true;
     } else {
-        element.parentNode.classList.remove(COMPLETED);
-        element.parentNode.classList.add(ACTIVE);
+        element.parentNode.dataset.done = ACTIVE;
         element.classList.remove(CHECK);
         element.classList.add(UNCHECK);
-        element.parentNode.querySelector(".textItem").classList.remove(LINE_THROUGH);
+        element.parentNode.querySelector('[data-job="edit"]').classList.remove(LINE_THROUGH);
         LIST[index].done = false;
     }
 }
@@ -224,11 +195,11 @@ function completeToDo(element) {
 // btnClear ================
 // =========================
 function clearCompleted() {
-    const done = document.querySelectorAll('button[type=button]');
+    const done = document.querySelectorAll('[data-job="checkbox"]');
 
-    Object.keys(done).forEach(function(i) {
-        if(done[i].parentNode.classList.contains(COMPLETED) == true) {
-            const index = LIST.findIndex(element => element.done == true);
+    Object.keys(done).forEach(i => {
+        if(done[i].parentNode.getAttribute('data-done') === COMPLETED) {
+            const index = LIST.findIndex(element => element.done === true);
             removeToDo(done[i]);
             LIST.splice(index, 1);
         }
@@ -239,7 +210,6 @@ function clearCompleted() {
     showBtnAllDone(LIST.length);
     showBtnClearCompleted();
 
-    checked = !checked;
     localStorage.setItem("TODO", JSON.stringify(LIST));
 }
 
@@ -251,7 +221,7 @@ function removeToDo(element) {
 // =========================
 function targetElement() {
     element = event.target;
-    elementJob = element.attributes.job.value;
+    elementJob = element.getAttribute('data-job');
 }
 
 function getIndex(element) {
@@ -263,28 +233,30 @@ function handleClick() {
     targetElement();
     getIndex(element);
 
-    if(elementJob == COMPLETED) {
+    if(elementJob === "checkbox") {
         completeToDo(element);
         filterSelection(activeFilterJob);
-        checked = !checked;
     }
-    if(elementJob == "delete") { 
+    if(elementJob === "delete") { 
         removeToDo(element);
         LIST.splice(index, 1);
     }
-    if(elementJob == "clearCompleted") {
+    if(elementJob === "clearCompleted") {
         clearCompleted();
     }
-    if(elementJob == "all") {
+    if(elementJob === "all") {
         filterSelection("all");
+        switchFrame(element);
     }
-    if(elementJob == "completedFilter") {
+    if(elementJob === "completed") {
         filterSelection(COMPLETED);
+        switchFrame(element);
     }
-    if(elementJob == ACTIVE) {
+    if(elementJob === ACTIVE) {
         filterSelection(ACTIVE);
+        switchFrame(element);
     }
-    if(elementJob == "checkeAll") {
+    if(elementJob === "checkeAll") {
         checkeAll();
     }
 
@@ -297,9 +269,9 @@ function handleClick() {
 }
 
 function handleDblClick() {
-    if(input == document.getElementById("inputAddItem")) {
-        if(elementJob == "edit") {
-            const item = `<li class="js-SearchElem"><input type="text" class="content__editToDo" value="${LIST[index].name}" id="inputEditItem"></li>`;
+    if(input === document.getElementById("inputAddItem")) {
+        if(elementJob === "edit") {
+            const item = `<li data-search="searchElem"><input type="text" class="content__editToDo" value="${LIST[index].name}" id="inputEditItem"></li>`;
             const position = "afterend";
 
             element.parentNode.insertAdjacentHTML(position, item);
@@ -311,21 +283,21 @@ function handleDblClick() {
 }
 
 function handleKeyUp() {
-    if(event.keyCode == 13) {
-        if(input.id == "inputAddItem") {
+    if(event.keyCode === ENTER) {
+        if(input.id === "inputAddItem") {
             handleKeyUpAddToDo();
         } else {
             handleEditToDo();
         }
     }
-    if(event.keyCode == 27) {
+    if(event.keyCode === ESC) {
         removeItems();
         loadList(LIST);
     }
 }
 
 document.addEventListener('click', function(event) {
-    if(input == document.getElementById("inputEditItem")) {
+    if(input === document.getElementById("inputEditItem")) {
         const e = document.getElementById("inputEditItem");
 
         if (!e.contains(event.target)) {

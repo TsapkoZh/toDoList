@@ -1,0 +1,62 @@
+.filter {
+    height: 1.3vw;
+    font-size: .5vw;
+    padding: .5vw;
+    border: 0;
+    background-color: rgb(255, 255, 255);
+    border-top: .01vw solid rgba(128, 128, 128, 0.185);
+}
+
+.content__filter {
+    display: none;
+}
+
+.filter_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.todoCount {
+    margin: .2vw .7vw;
+    font-size: .7vw;
+}
+
+.filters {
+    display: flex;
+}
+
+.filterSwitch__btn {
+    border: .01vw solid rgb(255, 255, 255);
+    border-radius: .2vw;
+    background-color: rgb(255, 255, 255);
+    font-size: .8vw;
+    outline: none;
+    cursor: pointer;
+}
+
+.filterSwitch__btn.included {
+    border-color: rgba(194, 66, 66, 0.456);
+}
+
+.wrapperClearCompleted {
+    text-align: center;
+    width: 8vw;
+    padding: .2vw 0;
+}
+
+.clearCompleted {
+    display: none;
+    border: none;
+    outline: none;
+    margin: auto;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.185);
+    background-color: rgb(255, 255, 255);
+    transition: 1s;
+    cursor: pointer;
+}
+
+.clearCompleted:hover {
+    color: rgba(70, 22, 22, 0.689); 
+}

@@ -1,0 +1,80 @@
+@media (max-width: 1368px) {  
+    .content__title {
+        font-size: 85px;
+    }
+    
+    .allDone {  
+        background-size: 14px 12px;
+    }
+    
+    .wrapper {
+        width: 55px;
+    }
+    
+    .content__newToDo { 
+        width: 345px;
+        height: 33px;
+        font-size: 16px;
+        padding: 7px;
+    }
+    
+    .item {
+        font-size: 16px;
+    }
+    
+    .toggleNotDone {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .toggleDone {
+    
+        width: 24px;
+        height: 24px;
+    }
+    
+    .textItem { 
+        line-height: 20px;
+        width: 278px;
+        padding: 10px 50px 10px;
+    }
+    
+    .destroy { 
+        left: 367px; */
+        width: 22px;
+        height: 22px;
+    }
+    
+    .destroy::before {
+        width: 18px;
+        height: 3px;
+    }
+    .destroy::after {
+        width: 18px;
+        height: 3px;
+    }
+    
+    .content__editToDo {
+        width: 345px;
+        height: 28px;
+        font-size: 16px;
+        padding: 7px;
+        margin-left: 47px;
+    }
+    
+    .filter {
+        height: 18px;
+        font-size: 11px;
+        padding: 7px;
+    }
+    
+    .todoCount {
+        margin: 3px 9px;
+        font-size: 12px;
+    }
+    
+    .wrapperClearCompleted {
+        width: 110px;
+        padding: 3px 0;
+    }
+}

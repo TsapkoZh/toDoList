@@ -1,0 +1,139 @@
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+.list__item {
+    display: none;
+}
+
+.item {
+    position: relative;
+    font-size: 1.2vw;
+    border-width: .01vw;
+    border-top: .01vw solid rgba(128, 128, 128, 0.185);
+    background-color: rgb(255, 255, 255);
+}
+
+.toggleNotDone {
+    position: absolute;
+    left: .85vw;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    width: 1.6vw;
+    height: 1.6vw;
+    border: .01vw solid rgba(75, 75, 75, 0.151);
+    outline: none;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    transition: border .3s;
+    vertical-align: middle;
+}
+
+.toggleNotDone:hover {
+    border: .01vw solid rgba(63, 143, 38, 0.397);
+}
+
+.toggleDone {
+    position: absolute;
+    left: .85vw;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    width: 1.6vw;
+    height: 1.6vw;
+    border: .01vw solid rgb(23, 116, 72);
+    outline: none;
+    background-color: rgb(255, 255, 255);
+    background-image: url(images/greenCheck.png);
+    background-position: center;
+    background-size: 70% 90%;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    transition: border .4s;
+    opacity: .3;
+    z-index: 5;
+}
+
+.toggleDone:hover {
+    border: .01vw solid rgba(165, 65, 65, 0.397);
+}
+
+.textItem { 
+    display: inline-block;
+    overflow-wrap: break-word;
+    top: 0;
+    bottom: 0;
+    padding: .85vw 4vw;
+    margin: auto 0;
+    line-height: 1.5vw;
+    width: 21vw;
+    transition: opacity .3s;
+}
+
+.lineThrough {
+    opacity: .5;
+    text-decoration: line-through;
+}
+
+.destroy { 
+    position: absolute;
+    top: 0;
+    left: 27vw;
+    bottom: 0;
+    margin: auto 0;
+    width: 1.6vw;
+    height: 1.6vw;
+    background-color: rgb(255, 255, 255);
+    outline: none;
+    border: none;
+    opacity: 0;
+    transition: opacity .2s;
+}
+
+.item:hover .destroy {
+    opacity: 1;
+}
+
+.destroy:hover::after {
+    opacity: 1;
+}
+
+.destroy:hover::before {
+    opacity: 1;
+}
+
+.destroy::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 1.3vw;
+    height: .2vw;
+    transform: rotate(45deg);
+    background-color: rgb(194, 66, 66);
+    transition: opacity .2s;
+    opacity: .5;
+}
+
+.destroy::after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 1.3vw;
+    height: .2vw;
+    transform: rotate(-45deg);
+    background-color: rgb(194, 66, 66);
+    transition: opacity .2s;
+    opacity: .5;
+}
+
+.content__editToDo {
+    width: 26.2vw;
+    height: 2vw;
+    font-size: 1.2vw;
+    padding: .5vw .5vw .5vw .5vw;
+    outline: none;
+    margin-left: 3.6vw;
+    border: .03vw solid rgba(165, 64, 64, 0.267);
+}

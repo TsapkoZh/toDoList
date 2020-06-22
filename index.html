@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>JavaScript - To Do List</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
     <main class="mainСontainer">
@@ -11,31 +11,31 @@
             <h1 class="content__title">todos</h1>
             <div class="content_boxShadow" id="content">
                 <div class="content__btnAddToDo">
-                    <div class="wrapper"><button class="js-content__allDone content__allDone allDone" job="checkeAll"><!--img--></button></div>
+                    <div class="wrapper"><button class="content__allDone allDone" data-job="checkeAll"><!--img--></button></div>
                     <input type="text" class="content__newToDo inputToDo" placeholder="What needs to be done?" id="inputAddItem">
                 </div>
                
                 <ul class="content__list list" id="itemsList">
-                    <!-- `<li class="js-SearchElem list__item item ${MADE} ${SHOW}" id="${id}">
-                            <button type=button class="${DONE}" job="${COMPLETED}" id="${id}"></button>
-                            <span class="textItem ${LINE}" job="edit">${toDo}</span>
-                            <button class="destroy" job="delete"></button>
-                          </li>`; -->
+                    <!-- `<li class=" list__item item ${SHOW}" id="${id}" data-search="searchElem" data-done="active">
+                            <button class="${DONE}" data-job="checkbox" id="${id}"></button>
+                            <span class="textItem ${LINE}" data-job="edit">${toDo}</span>
+                            <button class="destroy" data-job="delete"></button>
+                         </li>`; -->
                 </ul> 
     
-                <sectioin class="js-filter content__filter filter show">
+                <sectioin class="content__filter filter show" data-filter="filter">
                     <div class="filter_wrapper">
                         <div class="content__todoCount todoCount">
                             <span id="num">0</span>
                             items left
                         </div>
                         <div class="content__filterSwitch filterSwitch" id="filterBtnContainer">
-                            <button class="filterSwitch__btn included" job="all">All</button>
-                            <button class="filterSwitch__btn" job="active">Active</button>
-                            <button class="filterSwitch__btn" job="completedFilter">Complete</button>
+                            <button class="filterSwitch__btn included" data-search="btnFilter" data-job="all">All</button>
+                            <button class="filterSwitch__btn" data-search="btnFilter" data-job="completed">Active</button>
+                            <button class="filterSwitch__btn" data-search="btnFilter" data-job="active">Complete</button>
                         </div>
                         <div class="wrapperClearCompleted">
-                            <button class="js-clearCompleted clearCompleted" job="clearCompleted">Clear completed</button>
+                            <button class="clearCompleted" data-job="clearCompleted">Clear completed</button>
                         </div>
                     </div>
                 </section>
